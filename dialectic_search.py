@@ -12,7 +12,7 @@ class DialecticSearch:
             - process(solution)
             - modify(solution)
             - merge(thesis, antithesis)
-            - _evaluate(solution)
+            - evaluate(solution)
         :param globallimit: Maximum number of global iterations.
         :param locallimit: Maximum number of local non-improving iterations.
         """
@@ -34,7 +34,7 @@ class DialecticSearch:
         thesis = self.problem.process(thesis)
         
         best_solution = thesis
-        best_value = self.problem._evaluate(best_solution)
+        best_value = self.problem.evaluate(best_solution)
         global_counter = 0
         
         while global_counter < self.globallimit:
@@ -50,8 +50,8 @@ class DialecticSearch:
                 synthesis = self.problem.merge(thesis, antithesis)
                 synthesis = self.problem.process(synthesis)
                 
-                thesis_value = self.problem._evaluate(thesis)
-                synthesis_value = self.problem._evaluate(synthesis)
+                thesis_value = self.problem.evaluate(thesis)
+                synthesis_value = self.problem.evaluate(synthesis)
                 
                 # If the synthesis is worse than the thesis, skip updating and try a new antithesis.
                 if thesis_value < synthesis_value:
@@ -87,7 +87,7 @@ class DialecticSearch:
     #     def init_solution(self):
     #         ...
 
-    #     def greedy_improvement(self, solution):
+    #     def process(self, solution):
     #         ...
 
     #     def modify(self, solution):
@@ -96,7 +96,7 @@ class DialecticSearch:
     #     def merge(self, thesis, antithesis):
     #         ...
 
-    #     def _evaluate(self, solution):
+    #     def evaluate(self, solution):
     #         ...
     
     # my_problem = MyProblem()
