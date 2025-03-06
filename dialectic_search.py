@@ -9,7 +9,7 @@ class DialecticSearch:
         
         :param problem: An instance of a problem class that implements:
             - init_solution()
-            - process(solution)
+            - greedy_improvement(solution)
             - modify(solution)
             - merge(thesis, antithesis)
             - evaluate(solution)
@@ -31,10 +31,10 @@ class DialecticSearch:
 
         # Initialize and improve the starting solution (thesis)
         thesis = self.problem.init_solution()
-        thesis = self.problem.process(thesis)
+        thesis, thesis_value = self.problem.greedy_improvement(thesis)
         
         best_solution = thesis
-        best_value = self.problem.evaluate(best_solution)
+        best_value = thesis_value
         global_counter = 0
         
         while global_counter < self.globallimit:
@@ -45,14 +45,11 @@ class DialecticSearch:
             while local_counter < self.locallimit:
                 
                 # Generate an antithesis from a modified version of the thesis and improve it.
-                antithesis = self.problem.process(self.problem.modify(thesis))
+                antithesis, antithesis_value = self.problem.greedy_improvement(self.problem.modify(thesis))
                 # Merge thesis and antithesis to form a synthesis and improve it.
                 synthesis = self.problem.merge(thesis, antithesis)
-                synthesis = self.problem.process(synthesis)
-                
-                thesis_value = self.problem.evaluate(thesis)
-                synthesis_value = self.problem.evaluate(synthesis)
-                
+                synthesis, synthesis_value = self.problem.greedy_improvement(synthesis)
+                                
                 # If the synthesis is worse than the thesis, skip updating and try a new antithesis.
                 if thesis_value < synthesis_value:
                     local_counter += 1
@@ -71,9 +68,11 @@ class DialecticSearch:
                 
                 # Update the thesis with the synthesis.
                 thesis = synthesis
+                thesis_value = synthesis_value
             
             # After local iterations set thesis to the last antithesis.
-            thesis = antithesis
+            thesis = antithesis_value
+            thesis_value = antithesis_value
             global_counter += 1
         
         return best_solution, best_value
@@ -87,7 +86,7 @@ class DialecticSearch:
     #     def init_solution(self):
     #         ...
 
-    #     def process(self, solution):
+    #     def greedy_improvement(self, solution):
     #         ...
 
     #     def modify(self, solution):
